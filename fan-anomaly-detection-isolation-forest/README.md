@@ -1,131 +1,77 @@
-Fan Noise Anomaly Detection using Isolation Forest
+# 🛠️ Fan Noise Anomaly Detection using Isolation Forest
 
-This project implements a noise-based anomaly detection system for end-of-line manufacturing quality inspection using industrial fan audio features from the DCASE 2020 Challenge.
+This project implements an **acoustic-based anomaly detection system** designed for end-of-line quality inspection in manufacturing. By analyzing industrial fan audio features from the **DCASE 2020 Challenge**, the system automatically identifies defective units based on sound signatures.
 
-In manufacturing environments, products such as cooling fans, electric motors, pumps, and small mechanical assemblies (e.g., toy cars, gear units) are tested at the end of the production line.
+---
 
-Defects in these products often appear as abnormal acoustic patterns, including:
+## 📋 Project Overview
 
-	Grinding or rubbing sounds in motors and fans
-	Clicking or knocking in gear mechanisms
-	Irregular airflow or turbulence noise
-	Vibrations caused by misaligned or worn components
+In smart manufacturing, defects often manifest as abnormal sound patterns. This system identifies mechanical issues that are difficult to see but easy to detect through sound:
 
-These faults are difficult to detect visually but can be clearly identified through sound.
+* **Grinding or Rubbing** sounds in fan motors.
+* **Clicking/Knocking** in mechanical gear units.
+* **Irregular Airflow** or turbulence noise.
+* **Structural Vibrations** caused by misaligned components.
 
-📌 Problem Statement
 
-At the end of a manufacturing line, each product (fan, motor, pump, or mechanical unit) must be classified as normal or defective before it is shipped.
 
-The challenge is to build a system that can:
+---
 
-	Automatically detect faulty products using only their sound signals, without requiring manual inspection.
+## 📌 Problem Statement
 
-This project solves this problem by using fan noise recordings from the DCASE industrial dataset and applying an Isolation Forest anomaly detection model to identify abnormal acoustic behavior.
+At the end of a production line, products must be classified as **Normal** or **Defective** before shipping. This project solves this by:
+1. Using fan noise recordings from the **DCASE industrial dataset**.
+2. Applying an **Isolation Forest** model to isolate abnormal acoustic behavior without requiring manual inspection.
 
-The goal is to:
-Automatically identify defective products using only their sound signatures.
+---
 
-📂 Dataset
-This project is based on the DCASE 2020 Task 2 – Industrial Sound Dataset (Fan category).
+## 📂 Dataset & References
 
-DCASE Challenge & Preprocessing
-https://www.kaggle.com/code/muhammadmahtab/dcase-2020-task-2-preprocessed-eda
+This project is based on the pre-processing work from the DCASE 2020 Task 2 challenge.
 
-Pre-extracted feature files
-These files contain audio features extracted from fan sound recordings.
+* **Full Project Notebook:** [DCASE 2020 Task 2 - Preprocessed EDA](https://www.kaggle.com/code/muhammadmahtab/dcase-2020-task-2-preprocessed-eda/notebook)
 
-Train data
-dc2020t2l1-fan-train.npy
+### 1. Download Required Data
+Download these specific files from the Kaggle project pages and place them in your project folder:
 
-Download:
-https://storage.googleapis.com/kaggle-data-sets/562906/1025648/compressed/dc2020t2l1-fan-train.npy.zip
+* **From the [Input Directory](https://www.kaggle.com/code/muhammadmahtab/dcase-2020-task-2-preprocessed-eda/input):**
+    * `dc2020t2l1-fan-train.npy`
+    * `dc2020t2l1-fan-test.npy`
+* **From the [Output Directory](https://www.kaggle.com/code/muhammadmahtab/dcase-2020-task-2-preprocessed-eda/output):**
+    * `file_info.csv`
 
-Test data
-dc2020t2l1-fan-test.npy
-
-Download:
-https://storage.googleapis.com/kaggle-data-sets/562906/1025648/compressed/dc2020t2l1-fan-test.npy.zip
-
-📑 Labels and Metadata
-The file file_info.csv contains:
-File names
-Device type (fan, pump, etc.)
-Train/Test split
-Ground truth (normal / anomaly)
-
-It is used to:
-Extract true labels for fan test samples
-Compute F1 score for model evaluation
-
-CSV source:
-https://storage.googleapis.com/kaggle-script-versions/216835682/output/file_info.csv
-
-🧠 Model & Approach
-This project uses:
-Isolation Forest (unsupervised anomaly detection)
-Feature vectors extracted from fan audio signals
-Grid search on:
-	contamination
-	number of trees (n_estimators)
-
-The model:
-Trains only on normal fan sounds
-Learns the pattern of healthy machines
-Flags deviations as anomalies
-
-📊 Evaluation
-The model is evaluated using:
-F1 Score
-Based on ground-truth labels from file_info.csv
-
-The script searches for the best hyperparameters and prints:
-F1 score for each configuration
-Best parameters
-Final predictions
-
-▶ How to Run
-1. Download the data
-Download and unzip:
-	dc2020t2l1-fan-train.npy
-	dc2020t2l1-fan-test.npy
-
-Place them inside:
+### 2. Project Structure
+```text
 fan-anomaly-detection-isolation-forest/
+ ├── main.py                # Training, evaluation & prediction
+ ├── file_info.csv          # Ground-truth labels & metadata
+ ├── dc2020t2l1-fan-train.npy
+ ├── dc2020t2l1-fan-test.npy
+ ├── requirements.txt       # Dependencies
+ └── README.md 
+```
 
-2. Install dependencies
-pip install -r requirements.txt
+## ▶️ How to Run
 
-3. Run the model
-python main.py
+1. **Install Dependencies**  
+Ensure you have Python installed, then run:  
+pip install -r requirements.txt  
 
+2. **Run the Model**  
+Execute the main script to train the model and view results:  
+python main.py  
 
-The script will:
+The script will perform the following:  
+- Load and flatten the train and test audio features from the .npy files  
+- Perform a hyperparameter grid search for contamination and n_estimators  
+- Print the best F1 score achieved  
+- Display the first 20 anomaly predictions  
 
-Load train & test features
+---
 
-Train Isolation Forest
+## 🎯 What this demonstrates
 
-Perform hyperparameter search
-
-Print the best F1 score
-
-Display anomaly predictions
-
-📁 Project Structure
-fan-anomaly-detection-isolation-forest/
- ├── main.py          # Training, evaluation & prediction
- ├── file_info.csv    # Ground-truth labels & metadata
- ├── README.md
- └── requirements.txt
-
-🎯 What this demonstrates
-
-This project shows:
-Industrial audio anomaly detection
-Use of real manufacturing datasets (DCASE)
-Feature-based ML pipeline
-Model evaluation using F1 score
-End-to-end reproducible experiment
-
-This is a baseline industrial anomaly detection system and serves as a foundation for more advanced models such as CNN Autoencoders and deep learning-based acoustic models.
+- **Industrial Audio Detection** – Real-world application of machine learning in manufacturing quality control  
+- **Feature-based Pipeline** – Efficient handling and flattening of high-dimensional .npy audio data  
+- **Model Evaluation** – Use of the **F1 score** to measure performance on imbalanced anomaly datasets  
+- **Baseline Foundation** – A strong baseline for advancing to deep learning models such as CNN Autoencoders  
