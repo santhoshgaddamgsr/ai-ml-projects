@@ -4,8 +4,8 @@ from sklearn.ensemble import IsolationForest
 from sklearn.metrics import accuracy_score, f1_score
 
 # Load data
-X_train = np.load(r"D:\ai-pocs-portfolio\fan-anomaly-detection-isolation-forest\dc2020t2l1-fan-train.npy")
-X_test = np.load(r"D:\ai-pocs-portfolio\fan-anomaly-detection-isolation-forest\dc2020t2l1-fan-test.npy")
+X_train = np.load(r"D:\ai-ml-projects\fan-anomaly-detection-isolation-forest\dc2020t2l1-fan-train.npy")
+X_test = np.load(r"D:\ai-ml-projects\fan-anomaly-detection-isolation-forest\dc2020t2l1-fan-test.npy")
 
 print("Train shape:", X_train.shape)
 print("Test shape:", X_test.shape)
@@ -20,7 +20,7 @@ print("Flattened train shape:", X_train_flat.shape)
 print("Flattened test shape:", X_test_flat.shape)
 
 # Read true labels from CSV
-df = pd.read_csv(r"D:\ai-pocs-portfolio\fan-anomaly-detection-isolation-forest\file_info.csv")
+df = pd.read_csv(r"D:\ai-ml-projects\fan-anomaly-detection-isolation-forest\file_info.csv")
 df_fan_test = df[(df.type == "fan") & (df.split == "test")].reset_index(drop=True)
 y_true = df_fan_test.file.str.contains("anomaly").astype(int)
 
