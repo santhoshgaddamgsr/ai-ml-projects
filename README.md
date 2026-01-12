@@ -1,2 +1,1 @@
-# ai-pocs-portfolio
-AI/ML POCs
+# AI & Machine Learning Projects
