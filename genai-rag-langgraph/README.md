@@ -58,8 +58,7 @@ genai-rag-langgraph/
 │ └── docs.txt
 └── .gitignore
 
-yaml
-Copy code
+
 
 ---
 
@@ -69,41 +68,35 @@ Copy code
 git clone <your-github-repo-url>
 cd genai-rag-langgraph
 
-shell
-Copy code
+
 
 ### 2. Create virtual environment
 python -m venv venv
 venv\Scripts\activate
 
-shell
-Copy code
+
 
 ### 3. Install dependencies
 pip install -r requirements.txt
 
-bash
-Copy code
+
 
 ### 4. Set Gemini API key
 
 Create a file `.env`:
 GOOGLE_API_KEY=your_gemini_api_key_here
 
-shell
-Copy code
+
 
 ### 5. Run the API
 uvicorn main:api --reload
 
-makefile
-Copy code
+
 
 Open:
 http://127.0.0.1:8000/docs
 
-yaml
-Copy code
+
 
 ---
 
@@ -114,8 +107,7 @@ POST `/ask`
 "question": "What is LangGraph?"
 }
 
-yaml
-Copy code
+
 
 The system will retrieve documents, evaluate confidence, and generate a grounded response.
 
