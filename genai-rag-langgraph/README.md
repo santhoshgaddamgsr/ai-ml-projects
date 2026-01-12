@@ -49,17 +49,15 @@ User
 
 ## 📁 Project Structure
 
+```text
 genai-rag-langgraph/
-│
 ├── main.py
 ├── requirements.txt
 ├── .env.example
 ├── data/
-│ └── docs.txt
+│   └── docs.txt
 └── .gitignore
-
-
-
+```
 ---
 
 ## 🛠️ Setup & Run
