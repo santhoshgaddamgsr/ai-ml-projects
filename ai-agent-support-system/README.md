@@ -24,9 +24,11 @@ NO → LLM Tool (Gemini)
 ↓
 Final Answer
 
+```
+
 This avoids hallucinations and makes the system safe for enterprise use.
 
-```
+
 ---
 
 ## 📚 Company Knowledge Used
