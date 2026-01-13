@@ -11,6 +11,8 @@ The agent decides **dynamically** whether to use company documents or the LLM ba
 
 ## 🚀 Architecture
 
+```
+
 User Question
 ↓
 Vector Similarity (FAISS)
@@ -22,9 +24,9 @@ NO → LLM Tool (Gemini)
 ↓
 Final Answer
 
-
 This avoids hallucinations and makes the system safe for enterprise use.
 
+```
 ---
 
 ## 📚 Company Knowledge Used
@@ -64,11 +66,13 @@ GOOGLE_API_KEY=your_gemini_api_key
 
 ```bash
 docker build -t agentic-ai .
-
+```
+---
 3️⃣ Run the AI
 
 docker run -p 8000:8000 agentic-ai
 
+---
 4️⃣ Test in browser
 
 Open:
@@ -78,7 +82,7 @@ Use POST /ask with:
   "question": "What is maternity leave?"
 }
 
-
+---
 🧑‍💻 What this demonstrates
 
 This project demonstrates real-world GenAI engineering:
