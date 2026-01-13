@@ -169,7 +169,7 @@ def build_genai_graph():
         return {}
 
 
-    RAG_THRESHOLD = 1.2
+    RAG_THRESHOLD = 1.6
     FALLBACK_THRESHOLD = 2.5
     GAP_THRESHOLD = 0.25
 
