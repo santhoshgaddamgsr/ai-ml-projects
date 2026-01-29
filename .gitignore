@@ -1,0 +1,3 @@
+# DistilBERT model artifacts
+distilbert-sms-spam-classifier/distilbert-spam-model/
+distilbert-sms-spam-classifier/__pycache__/
