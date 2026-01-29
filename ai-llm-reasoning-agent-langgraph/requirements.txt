@@ -1,0 +1,23 @@
+fastapi
+uvicorn
+python-dotenv
+
+# LangChain + LangGraph
+langchain
+langgraph
+langchain-community
+langchain-text-splitters
+
+# LLM
+langchain-google-genai
+langchain-google-vertexai
+
+# Embeddings & Vector DB
+langchain-huggingface
+faiss-cpu
+
+# Core
+pydantic
+
+# GCP (only needed for Vertex AI mode)
+google-cloud-aiplatform
