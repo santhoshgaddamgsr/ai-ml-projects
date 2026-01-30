@@ -1,55 +1,81 @@
-# 🧠 Agentic AI – RAG with LangGraph, Gemini & Docker
+# 🧠 Deterministic Agentic AI — RAG with LangGraph, Gemini & Docker
 
-This project is a **production-grade Agentic AI system** that answers questions using:
-- Company knowledge (RAG)
-- Large Language Model (Gemini)
-- Intelligent routing using semantic similarity
+This project demonstrates a **production-oriented deterministic agentic AI system** that answers user questions using:
 
-The agent decides **dynamically** whether to use company documents or the LLM based on how relevant the question is.
+- **Company knowledge (RAG)**
+- **Large Language Model (Google Gemini)**
+- **Rule-based routing using semantic similarity**
+
+The agent **deterministically decides** whether to use internal company documents or fall back to the LLM based on **vector similarity thresholds**, ensuring predictable and enterprise-safe behavior.
 
 ---
 
 ## 🚀 Architecture
-
 ```
-
 User Question
 ↓
-Vector Similarity (FAISS)
+Vector Similarity Search (FAISS)
 ↓
-Is it related to company data?
+Is the question related to company knowledge?
 ↓
-YES → RAG Tool (Docs + Embeddings)
-NO → LLM Tool (Gemini)
+┌──────────────────────────┐
+│ YES → RAG Tool │
+│ • Company documents │
+│ • Semantic retrieval │
+│ • Grounded response │
+└──────────────────────────┘
+↓
+┌──────────────────────────┐
+│ NO → LLM Tool │
+│ • Gemini model │
+│ • General knowledge │
+└──────────────────────────┘
 ↓
 Final Answer
-
 ```
 
-This avoids hallucinations and makes the system safe for enterprise use.
-
-
----
-
-## 📚 Company Knowledge Used
-
-- Employees get 20 days of paid leave per year  
-- Maternity leave is 6 months  
-- Work from home is allowed 2 days per week  
-
-These are stored in a vector database and retrieved using semantic search.
+This design minimizes hallucinations and provides **controlled AI behavior suitable for enterprise environments**.
 
 ---
 
-## 🧠 Key Features
+## 📚 Company Knowledge Base
 
-- LangGraph based agent routing  
+The following internal knowledge is used for retrieval:
+
+- Employees receive **20 days of paid leave per year**
+- **Maternity leave duration is 6 months**
+- **Work-from-home is allowed 2 days per week**
+
+These documents are stored in a **FAISS vector database** and retrieved using **semantic search**.
+
+---
+
+## 🧠 Agent Type
+
+This system implements a **deterministic agentic pipeline**.
+
+- Routing decisions are **rule-based**
+- LLM is **not allowed to control execution flow**
+- Same input always produces the same routing decision
+
+This design prioritizes:
+
+- predictability
+- auditability
+- cost control
+- reduced hallucination risk
+
+---
+
+## ✨ Key Features
+
+- LangGraph-based agent orchestration  
+- Deterministic routing using similarity thresholds  
 - FAISS vector store for document retrieval  
-- HuggingFace embeddings (MiniLM)  
-- Gemini LLM for reasoning  
-- Conversation memory  
-- FastAPI service  
-- Fully Dockerized  
+- HuggingFace MiniLM embeddings  
+- Google Gemini for response generation  
+- FastAPI backend service  
+- Fully Dockerized deployment  
 
 ---
 
@@ -58,43 +84,39 @@ These are stored in a vector database and retrieved using semantic search.
 ### 1️⃣ Create `.env`
 
 Create a file named `.env`:
-
-GOOGLE_API_KEY=your_gemini_api_key
-
-
----
-
-### 2️⃣ Build the Docker image
-
-```bash
-docker build -t agentic-ai .
 ```
----
-3️⃣ Run the AI
+GOOGLE_API_KEY=your_gemini_api_key
+```
 
-docker run -p 8000:8000 agentic-ai
-
----
-4️⃣ Test in browser
-
+### 2️⃣ Build Docker image
+```
+docker build -t deterministic-agent .
+```
+### 3️⃣ Run the application
+```
+docker run -p 8000:8000 deterministic-agent
+```
+### 4️⃣ Test in browser
 Open:
+```
 http://localhost:8000/docs
+```
 Use POST /ask with:
+```
 {
   "question": "What is maternity leave?"
 }
+```
+### 🎯 What This Project Demonstrates
+This project reflects real-world GenAI engineering practices:  
+- Deterministic agentic routing  
+- Retrieval-Augmented Generation (RAG)  
+- Enterprise-safe AI architecture  
+- Similarity-based decision control  
+- API-based AI deployment  
+- Containerized production setup  
 
----
-🧑‍💻 What this demonstrates
+This is the type of architecture commonly used in enterprise internal assistants, where reliability and governance are more important than autonomous reasoning.
 
-This project demonstrates real-world GenAI engineering:
-
-    Agentic decision making
-    Retrieval-Augmented Generation (RAG)
-    Safe AI routing using similarity thresholds
-    API-based deployment
-    Containerized production setup
-This is the same architecture used in enterprise AI assistants.
-
-📌 Author
-Built by Santhosh Gaddam as part of an AI / GenAI engineering portfolio.
+### 👨‍💻 Author
+Santhosh Gaddam
