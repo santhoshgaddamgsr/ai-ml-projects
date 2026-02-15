@@ -45,6 +45,15 @@ Thumbs.db
 *.faiss
 *.pkl
 *.joblib
+faiss_index/
 
+# ======================
+# Model artifacts
+# ======================
+distilbert-sms-spam-classifier/distilbert-spam-model/
+distilbert-sms-spam-classifier/__pycache__/
 
+# ======================
+# Evaluation
+# ======================
 .deepeval/
