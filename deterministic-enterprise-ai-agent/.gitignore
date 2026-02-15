@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.env
+
+# Virtual env
+venv/
+.env/
+
+# HuggingFace / transformers cache
+.cache/
+.huggingface/
+
+# FAISS
+*.faiss
+*.index
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log

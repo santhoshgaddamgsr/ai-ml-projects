@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+venv/
+.env/
+
+# Model artifacts (DO NOT PUSH)
+distilbert-spam-model/
+*.pt
+*.bin
+*.ckpt
+
+# Notebooks
+.ipynb_checkpoints/
