@@ -45,3 +45,11 @@ Thumbs.db
 *.faiss
 *.pkl
 *.joblib
+
+
+.deepeval/
+
+# Evaluation artifacts
+eval_framework/evaluation_results_detailed.csv
+eval_framework/evaluation_history.csv
+.deepeval/

@@ -123,7 +123,7 @@ print(model)
 # ------------------------------
 # 3️⃣ TRAIN
 # ------------------------------
-EPOCHS = 20
+EPOCHS = 1
 
 for epoch in range(EPOCHS):
     total_loss = 0

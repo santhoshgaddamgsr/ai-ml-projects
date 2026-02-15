@@ -12,15 +12,16 @@ from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langgraph.graph import StateGraph
 
-
 # Globals
 llm = None
 vectorstore = None
 graph_app = None
 
+FAISS_PATH = "faiss_index"
+
 
 # ======================================================
-# 1. Lifespan (startup loading)
+# 1. Lifespan (startup loading) – OPTIMIZED ONLY
 # ======================================================
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,20 +29,16 @@ async def lifespan(app: FastAPI):
 
     load_dotenv()
 
-    USE_VERTEX = os.getenv("USE_VERTEX", "false").lower() == "true"
-
     # -----------------------------
-    # LLM setup
+    # LLM setup (UNCHANGED LOGIC)
     # -----------------------------
     from langchain_google_genai import ChatGoogleGenerativeAI
 
-    # The library automatically detects Vertex if you pass 'project' or 'credentials'
     if os.getenv("USE_VERTEX", "false").lower() == "true":
         llm = ChatGoogleGenerativeAI(
             model="gemini-2.5-flash",
             project=os.getenv("GCP_PROJECT_ID"),
-            location=os.getenv("LOCATION", "asia-south1"), # Match your gcloud region
-            # No need to manually pass credentials; it finds 'Application Default Credentials'
+            location=os.getenv("LOCATION", "asia-south1"),
         )
         print("✅ Using Vertex AI Gemini")
     else:
@@ -50,49 +47,70 @@ async def lifespan(app: FastAPI):
             google_api_key=os.getenv("GOOGLE_API_KEY"),
         )
         print("✅ Using Google AI Studio API Key")
+
     # -----------------------------
-    # Vectorstore setup
+    # Vectorstore setup – OPTIMIZED
     # -----------------------------
     from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_community.document_loaders import DirectoryLoader
     from langchain_community.document_loaders import TextLoader
     from langchain_community.vectorstores import FAISS
 
-
-    loader = DirectoryLoader(
-        "data/knowledge_base",
-        glob="*.txt",
-        loader_cls=TextLoader
-    )
-
-    documents = loader.load()
-
-
-
-    splitter = RecursiveCharacterTextSplitter(
-        chunk_size=200,
-        chunk_overlap=20
-    )
-
-    chunks = splitter.split_documents(documents)
-
     embeddings = HuggingFaceEmbeddings(
         model_name="all-MiniLM-L6-v2"
     )
 
-    vectorstore = FAISS.from_documents(chunks, embeddings)
+    # 🔥 FAST PATH – Load existing index
+    if os.path.exists(FAISS_PATH):
+        vectorstore = FAISS.load_local(
+            FAISS_PATH,
+            embeddings,
+            allow_dangerous_deserialization=True
+        )
+        print("⚡ Loaded existing FAISS index")
+
+    else:
+        print("📚 Building FAISS index first time...")
+
+        loader = DirectoryLoader(
+            "data/knowledge_base",
+            glob="*.txt",
+            loader_cls=TextLoader
+        )
+
+        documents = loader.load()
+
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=200,
+            chunk_overlap=20
+        )
+
+        chunks = splitter.split_documents(documents)
+
+        vectorstore = FAISS.from_documents(chunks, embeddings)
+
+        # 🔥 SAVE FOR NEXT STARTUP
+        vectorstore.save_local(FAISS_PATH)
+        print("💾 FAISS index saved")
 
     # -----------------------------
     # Compile graph
     # -----------------------------
     graph_app = compile_graph()
 
+    # 🔥 Warmup (no logic change)
+    try:
+        vectorstore.similarity_search("warmup", k=1)
+        llm.invoke("hi")
+    except:
+        pass
+
     print("🚀 Startup complete")
     yield
 
 
 # ======================================================
-# 2. Agent State
+# 2. Agent State (UNCHANGED)
 # ======================================================
 class AgentState(TypedDict):
     question: str
@@ -103,7 +121,7 @@ class AgentState(TypedDict):
 
 
 # ======================================================
-# 3. Similarity-based routing
+# 3. Similarity-based routing (EXACT SAME LOGIC)
 # ======================================================
 def decide_route_with_confidence(query: str):
     docs_with_scores = vectorstore.similarity_search_with_score(query, k=1)
@@ -119,7 +137,7 @@ def decide_route_with_confidence(query: str):
 
 
 # ======================================================
-# 4. Tools
+# 4. Tools (UNCHANGED)
 # ======================================================
 def rag_tool(state: AgentState):
     query = state["question"]
@@ -172,7 +190,7 @@ def agent_node(state: AgentState):
 
 
 # ======================================================
-# 5. LangGraph
+# 5. LangGraph (UNCHANGED)
 # ======================================================
 def compile_graph():
     workflow = StateGraph(AgentState)
@@ -199,7 +217,7 @@ def compile_graph():
 
 
 # ======================================================
-# 6. FastAPI
+# 6. FastAPI + HTML (100% UNTOUCHED)
 # ======================================================
 app = FastAPI(lifespan=lifespan)
 
@@ -217,8 +235,7 @@ class AskResponse(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    return """
-<!DOCTYPE html>
+    return """<!DOCTYPE html>
 <html>
 <head>
     <title>Enterprise Agentic AI Assistant</title>
@@ -232,7 +249,6 @@ async def home():
 Agentic loop-based GenAI system with controlled decision routing, retrieval grounding, and explainability.
 </p>
 
-
 <hr>
 
 <b>Try example questions:</b><br><br>
@@ -241,7 +257,6 @@ Agentic loop-based GenAI system with controlled decision routing, retrieval grou
 <button onclick="setQ('What is the maternity leave duration?')">Maternity policy</button>
 <button onclick="setQ('Is work from home allowed?')">WFH policy</button>
 <button onclick="setQ('Who is MS Dhoni?')">Out of scope</button>
-
 
 <br><br>
 
@@ -282,9 +297,7 @@ async function ask() {
 </script>
 
 </body>
-</html>
-"""
-
+</html>"""
 
 
 @app.post("/ask", response_model=AskResponse)
@@ -293,9 +306,6 @@ async def ask(req: AskRequest):
     return result
 
 
-# ======================================================
-# 7. Local run
-# ======================================================
 if __name__ == "__main__":
     import uvicorn
 

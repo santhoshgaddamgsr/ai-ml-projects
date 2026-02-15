@@ -257,6 +257,37 @@ graph.add_edge("llm", END)
 
 agent_app = graph.compile()
 
+#########################
+def rag_pipeline(query: str):
+    # 1. Retrieve documents
+    docs = retriever.invoke(query)
+
+    # Extract raw text chunks
+    retrieved_contexts = [doc.page_content for doc in docs]
+
+    # 2. Create context string
+    context_text = "\n\n".join(retrieved_contexts)
+
+    # 3. Generate answer using ONLY retrieved context
+    prompt = f"""
+You must answer strictly using the provided context.
+If answer not found, say "I don't have enough information."
+
+Context:
+{context_text}
+
+Question:
+{query}
+"""
+
+    response = llm.invoke(prompt)
+    answer = response.content
+
+    return {
+        "question": query,
+        "answer": answer,
+        "contexts": retrieved_contexts,   # VERY IMPORTANT
+    }
 
 # ======================================================
 # 11. FastAPI + UI
